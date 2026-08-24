@@ -1,0 +1,452 @@
+.home {
+  min-height: 100vh;
+
+  background: #f8faff;
+
+  color: #1e293b;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+  min-height: 360px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 55px 25px;
+
+  box-sizing: border-box;
+
+  text-align: center;
+
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(242, 139, 168, 0.4),
+      transparent 32%
+    ),
+    linear-gradient(135deg, #5968d8, #4d78e8);
+
+  color: white;
+}
+
+.hero-content {
+  width: 100%;
+  max-width: 760px;
+}
+
+.hero-tag {
+  display: inline-block;
+
+  padding: 8px 16px;
+  margin-bottom: 17px;
+
+  border-radius: 30px;
+
+  background: rgba(255, 255, 255, 0.15);
+
+  font-size: 11px;
+  font-weight: 800;
+
+  letter-spacing: 1px;
+}
+
+.hero h1 {
+  margin: 0 0 16px;
+
+  font-family: "Poppins", sans-serif;
+
+  font-size: clamp(36px, 5vw, 58px);
+
+  line-height: 1.1;
+}
+
+.hero h1 span {
+  color: #ffd9e5;
+}
+
+.hero p {
+  max-width: 600px;
+
+  margin: 0 auto 25px;
+
+  color: #edf2ff;
+
+  font-size: 16px;
+
+  line-height: 1.6;
+}
+
+.hero-button {
+  border: none;
+
+  padding: 13px 25px;
+
+  border-radius: 12px;
+
+  background: #f28ba8;
+
+  color: white;
+
+  font-family: inherit;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.hero-button:hover {
+  background: #ec7195;
+
+  transform: translateY(-2px);
+}
+
+/* =========================
+   PRODUCTOS
+========================= */
+
+.products-section {
+  max-width: 1250px;
+
+  margin: auto;
+
+  padding: 70px 30px;
+}
+
+.section-heading {
+  text-align: center;
+
+  margin-bottom: 42px;
+}
+
+.section-heading > span {
+  color: #3157d5;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  letter-spacing: 2px;
+}
+
+.section-heading h2 {
+  margin: 8px 0;
+
+  font-family: "Poppins", sans-serif;
+
+  font-size: 34px;
+
+  color: #172554;
+}
+
+.section-heading p {
+  margin: 0;
+
+  color: #64748b;
+
+  font-size: 14px;
+}
+
+/* =========================
+   GRID
+========================= */
+
+.product-list {
+  display: grid;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 25px;
+}
+
+/* =========================
+   SIN RESULTADOS
+========================= */
+
+.no-results {
+  padding: 70px 20px;
+
+  text-align: center;
+
+  background: white;
+
+  border: 1px solid #e7edf6;
+
+  border-radius: 20px;
+}
+
+.no-results span {
+  font-size: 42px;
+}
+
+.no-results h3 {
+  margin: 15px 0 5px;
+
+  color: #1e293b;
+}
+
+.no-results p {
+  margin: 0;
+
+  color: #64748b;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.home-footer {
+  background: #172554;
+
+  color: white;
+}
+
+.footer-content {
+  max-width: 1250px;
+
+  margin: auto;
+
+  padding: 55px 30px;
+
+  display: grid;
+
+  grid-template-columns: 1.5fr 1fr 1.2fr;
+
+  gap: 50px;
+}
+
+.footer-brand h2 {
+  margin: 0 0 15px;
+
+  font-family: "Poppins", sans-serif;
+
+  font-size: 23px;
+}
+
+.footer-brand p {
+  max-width: 300px;
+
+  margin: 0;
+
+  color: #bfcef0;
+
+  font-size: 13px;
+
+  line-height: 1.7;
+}
+
+.footer-column {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+.footer-column h3 {
+  margin: 0 0 8px;
+
+  font-family: "Poppins", sans-serif;
+
+  font-size: 15px;
+}
+
+.footer-column a {
+  color: #bfcef0;
+
+  text-decoration: none;
+
+  font-size: 13px;
+
+  transition: 0.2s ease;
+}
+
+.footer-column a:hover {
+  color: #f28ba8;
+}
+
+.footer-column p {
+  margin: 0;
+
+  color: #bfcef0;
+
+  font-size: 13px;
+}
+
+/* =========================
+   FOOTER BOTTOM
+========================= */
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  padding: 18px 30px;
+
+  text-align: center;
+
+  color: #91a4d0;
+
+  font-size: 11px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+  .product-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .footer-content {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .hero {
+    min-height: 350px;
+
+    padding: 45px 20px;
+  }
+
+  .hero h1 {
+    font-size: 38px;
+  }
+
+  .products-section {
+    padding: 55px 20px;
+  }
+
+  .product-list {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+
+    padding: 45px 25px;
+  }
+}
+/* =========================
+   PEDIDO EXITOSO
+========================= */
+
+.success-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.58);
+  backdrop-filter: blur(7px);
+}
+
+.success-modal {
+  width: min(100%, 450px);
+  padding: 40px 32px;
+  background: white;
+  border-radius: 25px;
+  text-align: center;
+  box-shadow: 0 25px 70px rgba(15, 23, 42, 0.3);
+  animation: successAppear 0.3s ease;
+}
+
+@keyframes successAppear {
+  from {
+    opacity: 0;
+    transform: translateY(15px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.success-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e6f7ee;
+  color: #43a875;
+  font-size: 34px;
+  font-weight: 800;
+}
+
+.success-label {
+  color: #f28ba8;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.success-modal h2 {
+  margin: 10px 0;
+  font-family: "Poppins", sans-serif;
+  color: #172554;
+  font-size: 25px;
+}
+
+.success-modal > p {
+  margin: 0 auto;
+  max-width: 340px;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.success-order {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 25px;
+  padding: 16px 18px;
+  border-radius: 13px;
+  background: #f6f8ff;
+}
+
+.success-order span {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.success-order strong {
+  color: #3157a6;
+  font-size: 20px;
+}
+
+.success-modal button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 13px;
+  border: none;
+  border-radius: 11px;
+  background: #5b7bea;
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.success-modal button:hover {
+  background: #3157d5;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 500px) {
+  .success-modal {
+    padding: 32px 22px;
+  }
+}

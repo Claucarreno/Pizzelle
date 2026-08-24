@@ -1,0 +1,135 @@
+.footer {
+  background: #172554;
+  color: white;
+}
+
+.footer-main {
+  max-width: 1250px;
+  margin: auto;
+  padding: 65px 30px 50px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1.3fr;
+  gap: 45px;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-logo img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.footer-logo div {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-logo strong {
+  font-family: "Poppins", sans-serif;
+  font-size: 22px;
+}
+
+.footer-logo span {
+  color: #f28ba8;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.footer-brand > p {
+  max-width: 280px;
+  margin: 18px 0;
+  color: #bfcef0;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 9px;
+}
+
+.footer-socials a {
+  width: 37px;
+  height: 37px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  transition: 0.2s;
+}
+
+.footer-socials a:hover {
+  background: #f28ba8;
+}
+
+.footer-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-column h3 {
+  color: white;
+  font-family: "Poppins", sans-serif;
+  font-size: 15px;
+  margin-bottom: 7px;
+}
+
+.footer-column a {
+  color: #bfcef0;
+  font-size: 13px;
+}
+
+.footer-column a:hover {
+  color: #f28ba8;
+}
+
+.footer-contact p {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #bfcef0;
+  font-size: 13px;
+}
+
+.footer-contact svg {
+  color: #f28ba8;
+  flex-shrink: 0;
+}
+
+.footer-bottom {
+  max-width: 1250px;
+  margin: auto;
+  padding: 20px 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  color: #91a4d0;
+  font-size: 11px;
+}
+
+@media (max-width: 900px) {
+  .footer-main {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 550px) {
+  .footer-main {
+    grid-template-columns: 1fr;
+    padding: 50px 25px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    padding: 20px 25px;
+  }
+}
