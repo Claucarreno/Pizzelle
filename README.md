@@ -15,7 +15,7 @@
 
 Puedes probar Pizzelle directamente desde el navegador:
 
-### 🍕 [Visitar Pizzelle](https://pizzelle-cqfiumzvo-carrenoclaudia981-2332.vercel.app/)
+### 🍕 [Visitar Pizzelle](https://pizzelle.vercel.app/)
 
 💻 **Repositorio:**
 https://github.com/Claucarreno/Pizzelle
