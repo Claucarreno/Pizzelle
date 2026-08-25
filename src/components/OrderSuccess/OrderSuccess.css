@@ -10,11 +10,14 @@
 
 .success-close {
   position: absolute;
-  top: 18px;
-  right: 18px;
+  top: 14px;
+  right: 14px;
 
   width: 36px;
   height: 36px;
+
+  padding: 0;
+  margin: 0;
 
   border: none;
   border-radius: 10px;
@@ -22,12 +25,17 @@
   background: #f1f5ff;
   color: #64748b;
 
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   cursor: pointer;
+  z-index: 10;
 }
 
+.success-modal {
+  position: relative;
+}
 .success-icon {
   width: 90px;
   height: 90px;
