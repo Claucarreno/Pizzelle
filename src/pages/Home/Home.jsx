@@ -34,65 +34,54 @@ function Home() {
     {
       id: 1,
       name: "Pizza Margherita",
-      description:
-        "Salsa de tomate, mozzarella y albahaca fresca.",
-      price: 10.99,
+      description: "Salsa de tomate, mozzarella y albahaca fresca.",
+      price: 24000,
       image: image1,
     },
     {
       id: 2,
       name: "Pizza Pepperoni",
-      description:
-        "Salsa de tomate, mozzarella y pepperoni.",
-      price: 12.99,
+      description: "Salsa de tomate, mozzarella y pepperoni.",
+      price: 25000,
       image: image2,
     },
     {
       id: 3,
       name: "Pizza Hawaiana",
-      description:
-        "Mozzarella, piña y jamón.",
-      price: 14.99,
+      description: "Mozzarella, piña y jamón.",
+      price: 15000,
       image: image3,
     },
     {
       id: 4,
       name: "Pizza Tres Quesos",
-      description:
-        "Mozzarella, parmesano y gorgonzola.",
-      price: 15.99,
+      description: "Mozzarella, parmesano y gorgonzola.",
+      price: 18000,
       image: image4,
     },
     {
       id: 5,
       name: "Pizza Vegetariana",
-      description:
-        "Champiñones, cebolla y pimientos.",
-      price: 13.99,
+      description: "Champiñones, cebolla y pimientos.",
+      price: 20000,
       image: image5,
     },
     {
       id: 6,
       name: "Pizza Chicken",
-      description:
-        "Salsa BBQ, pollo y cebolla roja.",
-      price: 16.99,
+      description: "Salsa BBQ, pollo y cebolla roja.",
+      price: 17000,
       image: image6,
     },
   ];
 
   const saveCart = (newCart) => {
     setCart(newCart);
-    localStorage.setItem(
-      "pizzelleCart",
-      JSON.stringify(newCart)
-    );
+    localStorage.setItem("pizzelleCart", JSON.stringify(newCart));
   };
 
   const addToCart = (product) => {
-    const existingProduct = cart.find(
-      (item) => item.id === product.id
-    );
+    const existingProduct = cart.find((item) => item.id === product.id);
 
     let newCart;
 
@@ -103,7 +92,7 @@ function Home() {
               ...item,
               quantity: item.quantity + 1,
             }
-          : item
+          : item,
       );
     } else {
       newCart = [
@@ -125,7 +114,7 @@ function Home() {
             ...item,
             quantity: item.quantity + 1,
           }
-        : item
+        : item,
     );
 
     saveCart(newCart);
@@ -139,7 +128,7 @@ function Home() {
               ...item,
               quantity: item.quantity - 1,
             }
-          : item
+          : item,
       )
       .filter((item) => item.quantity > 0);
 
@@ -147,28 +136,20 @@ function Home() {
   };
 
   const removeFromCart = (id) => {
-    const newCart = cart.filter(
-      (item) => item.id !== id
-    );
+    const newCart = cart.filter((item) => item.id !== id);
 
     saveCart(newCart);
   };
 
-  const cartCount = cart.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
+  const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   const totalPrice = cart.reduce(
-    (total, item) =>
-      total + item.price * item.quantity,
-    0
+    (total, item) => total + item.price * item.quantity,
+    0,
   );
 
   const filteredProducts = products.filter((product) =>
-    product.name
-      .toLowerCase()
-      .includes(search.toLowerCase())
+    product.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   const handleGoToPayment = () => {
@@ -188,17 +169,14 @@ function Home() {
         method === "card"
           ? "Tarjeta"
           : method === "nequi"
-          ? "Nequi"
-          : "Efectivo",
+            ? "Nequi"
+            : "Efectivo",
       total: totalPrice,
       date: new Date().toLocaleString("es-CO"),
       products: cart,
     };
 
-    localStorage.setItem(
-      "pizzelleLastOrder",
-      JSON.stringify(order)
-    );
+    localStorage.setItem("pizzelleLastOrder", JSON.stringify(order));
 
     setLastOrder(order);
 
@@ -221,9 +199,7 @@ function Home() {
       <main>
         <section className="hero" id="inicio">
           <div className="hero-content">
-            <span className="hero-tag">
-              🍕 PIZZA ARTESANAL
-            </span>
+            <span className="hero-tag">🍕 PIZZA ARTESANAL</span>
 
             <h1>
               Tu pizza favorita,
@@ -231,19 +207,17 @@ function Home() {
             </h1>
 
             <p>
-              Ingredientes frescos, sabores increíbles y
-              pizzas preparadas especialmente para ti.
+              Ingredientes frescos, sabores increíbles y pizzas preparadas
+              especialmente para ti.
             </p>
 
             <button
               type="button"
               className="hero-button"
               onClick={() =>
-                document
-                  .getElementById("productos")
-                  ?.scrollIntoView({
-                    behavior: "smooth",
-                  })
+                document.getElementById("productos")?.scrollIntoView({
+                  behavior: "smooth",
+                })
               }
             >
               Ordenar ahora
@@ -251,18 +225,13 @@ function Home() {
           </div>
         </section>
 
-        <section
-          className="products-section"
-          id="productos"
-        >
+        <section className="products-section" id="productos">
           <div className="section-heading">
             <span>MENÚ</span>
 
             <h2>Nuestras pizzas</h2>
 
-            <p>
-              Elige tu favorita y agrégala al carrito.
-            </p>
+            <p>Elige tu favorita y agrégala al carrito.</p>
           </div>
 
           {filteredProducts.length > 0 ? (
@@ -279,13 +248,9 @@ function Home() {
             <div className="no-results">
               <span>🍕</span>
 
-              <h3>
-                No encontramos esa pizza
-              </h3>
+              <h3>No encontramos esa pizza</h3>
 
-              <p>
-                Intenta buscar otro nombre.
-              </p>
+              <p>Intenta buscar otro nombre.</p>
             </div>
           )}
         </section>
@@ -312,23 +277,17 @@ function Home() {
       )}
 
       {showSuccess && lastOrder && (
-        <OrderSuccess
-          order={lastOrder}
-          onClose={() => setShowSuccess(false)}
-        />
+        <OrderSuccess order={lastOrder} onClose={() => setShowSuccess(false)} />
       )}
 
-      <footer
-        className="home-footer"
-        id="contacto"
-      >
+      <footer className="home-footer" id="contacto">
         <div className="footer-content">
           <div className="footer-brand">
             <h2>🍕 Pizzelle</h2>
 
             <p>
-              Pizzas deliciosas preparadas con ingredientes
-              frescos y mucho sabor.
+              Pizzas deliciosas preparadas con ingredientes frescos y mucho
+              sabor.
             </p>
           </div>
 

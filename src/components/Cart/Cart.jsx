@@ -1,7 +1,7 @@
 import { X, Plus, Minus, Trash2, ShoppingBag } from "lucide-react";
 
 import "./Cart.css";
-
+import { formatPrice } from "../../utils/formatPrice";
 function Cart({
   cart,
   totalPrice,
@@ -50,7 +50,7 @@ function Cart({
                   <div className="cart-item-info">
                     <h3>{item.name}</h3>
 
-                    <span>${item.price.toFixed(2)}</span>
+                    <span>{formatPrice(item.price)}</span>
 
                     <div className="quantity">
                       <button
@@ -90,7 +90,7 @@ function Cart({
             <div className="cart-total">
               <span>Total</span>
 
-              <strong>${totalPrice.toFixed(2)}</strong>
+              <strong>{formatPrice(totalPrice)}</strong>
             </div>
 
             {/* PAGO */}
