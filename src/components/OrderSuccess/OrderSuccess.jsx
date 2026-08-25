@@ -3,13 +3,9 @@ import "./OrderSuccess.css";
 
 function OrderSuccess({ order, onClose }) {
   return (
-    <div className="modal-overlay">
+    <div className="order-success-overlay">
       <div className="success-modal">
-        <button
-          type="button"
-          className="success-close"
-          onClick={onClose}
-        >
+        <button type="button" className="success-close" onClick={onClose}>
           <X size={20} />
         </button>
 
@@ -17,15 +13,11 @@ function OrderSuccess({ order, onClose }) {
           <CheckCircle size={55} />
         </div>
 
-        <span className="success-label">
-          PEDIDO CONFIRMADO
-        </span>
+        <span className="success-label">PEDIDO CONFIRMADO</span>
 
         <h2>¡Gracias por tu compra! 🍕</h2>
 
-        <p>
-          Tu pedido ha sido recibido correctamente.
-        </p>
+        <p>Tu pedido ha sido recibido correctamente.</p>
 
         <div className="order-details">
           <div>
@@ -49,11 +41,7 @@ function OrderSuccess({ order, onClose }) {
           <span>30 - 45 minutos</span>
         </div>
 
-        <button
-          type="button"
-          className="success-button"
-          onClick={onClose}
-        >
+        <button type="button" className="success-button" onClick={onClose}>
           Volver al menú
         </button>
       </div>

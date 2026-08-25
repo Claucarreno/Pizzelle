@@ -1,41 +1,61 @@
-.success-modal {
-  position: relative;
-  width: min(100%, 460px);
-  padding: 38px;
-  border-radius: 26px;
-  background: white;
-  text-align: center;
-  box-shadow: 0 25px 70px rgba(15, 23, 42, 0.25);
-}
-
-.success-close {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-
-  width: 36px;
-  height: 36px;
-
-  padding: 0;
-  margin: 0;
-
-  border: none;
-  border-radius: 10px;
-
-  background: #f1f5ff;
-  color: #64748b;
+.order-success-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  cursor: pointer;
-  z-index: 10;
-}
+  padding: 20px;
 
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(6px);
+}
 .success-modal {
   position: relative;
+  width: min(100%, 460px);
+  padding: 38px;
+  border-radius: 26px;
+  background: #ffffff;
+  text-align: center;
+  box-shadow: 0 25px 70px rgba(15, 23, 42, 0.25);
+  box-sizing: border-box;
 }
+.success-close {
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+
+  width: 36px !important;
+  height: 36px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  border: 0 !important;
+  border-radius: 10px !important;
+
+  background: #f1f5ff !important;
+  color: #64748b !important;
+
+  cursor: pointer !important;
+  z-index: 9999 !important;
+
+  transform: none !important;
+}
+
+.success-close svg {
+  display: block !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+/* Icono */
+
 .success-icon {
   width: 90px;
   height: 90px;
@@ -51,6 +71,8 @@
   color: #35a866;
 }
 
+/* Etiqueta */
+
 .success-label {
   color: #f28ba8;
 
@@ -60,21 +82,29 @@
   letter-spacing: 1.5px;
 }
 
+/* Título */
+
 .success-modal h2 {
   margin: 8px 0;
 
   color: #172554;
 
   font-family: "Poppins", sans-serif;
+
   font-size: 25px;
 }
+
+/* Descripción */
 
 .success-modal > p {
   margin: 0;
 
   color: #64748b;
+
   font-size: 14px;
 }
+
+/* Detalles */
 
 .order-details {
   margin-top: 25px;
@@ -86,27 +116,34 @@
   background: #f8faff;
 
   display: grid;
+
   gap: 13px;
 }
 
 .order-details div {
   display: flex;
+
   justify-content: space-between;
   align-items: center;
 }
 
 .order-details span {
   color: #64748b;
+
   font-size: 12px;
 }
 
 .order-details strong {
   color: #3157a6;
+
   font-size: 13px;
 }
 
+/* Entrega */
+
 .delivery-info {
   margin-top: 15px;
+
   padding: 15px;
 
   border-radius: 14px;
@@ -114,19 +151,27 @@
   background: linear-gradient(135deg, #eaf2ff, #fff0f5);
 
   display: flex;
+
   justify-content: space-between;
+
+  align-items: center;
+
   gap: 10px;
 }
 
 .delivery-info strong {
   color: #3157a6;
+
   font-size: 12px;
 }
 
 .delivery-info span {
   color: #64748b;
+
   font-size: 12px;
 }
+
+/* Botón */
 
 .success-button {
   width: 100%;
@@ -139,6 +184,7 @@
   border-radius: 11px;
 
   background: #5b7bea;
+
   color: white;
 
   font-weight: 800;
@@ -150,8 +196,11 @@
 
 .success-button:hover {
   background: #3157d5;
+
   transform: translateY(-1px);
 }
+
+/* Responsive */
 
 @media (max-width: 500px) {
   .success-modal {
