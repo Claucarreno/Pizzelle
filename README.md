@@ -22,28 +22,6 @@ https://github.com/Claucarreno/Pizzelle
 
 ---
 
-## 📸 Capturas del proyecto
-
-> Las capturas de pantalla se agregarán próximamente para mostrar las principales vistas de la aplicación.
-
-<!--
-
-Ejemplo de cómo agregar las capturas:
-
-![Página principal de Pizzelle](./screenshots/home.png)
-
-![Catálogo de pizzas](./screenshots/catalogo.png)
-
-![Carrito de compras](./screenshots/carrito.png)
-
-![Proceso de checkout](./screenshots/checkout.png)
-
-![Inicio de sesión](./screenshots/login.png)
-
--->
-
----
-
 ## 📝 Descripción
 
 **Pizzelle** es una aplicación web de pedidos de pizza artesanal desarrollada como proyecto de aprendizaje y portafolio.
