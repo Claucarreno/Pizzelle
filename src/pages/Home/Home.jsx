@@ -1,26 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Navbar from "../../components/Navbar/Navbar";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import Cart from "../../components/Cart/Cart";
 import Payment from "../../components/Payment/Payment";
 import OrderSuccess from "../../components/OrderSuccess/OrderSuccess";
-
-import image1 from "../../assets/pizzamargarita.png";
-import image2 from "../../assets/pepperoni.png";
-import image3 from "../../assets/hawaiana.png";
-import image4 from "../../assets/tresquesos.png";
-import image5 from "../../assets/vegetariana.png";
-import image6 from "../../assets/chicken.png";
+import { useAuth } from "../../context/useAuth";
+import { useCart } from "../../context/useCart";
+import { createOrder } from "../../lib/orders";
+import { getCatalog } from "../../lib/catalog";
 
 import "./Home.css";
 
 function Home() {
-  const [cart, setCart] = useState(() => {
-    const savedCart = localStorage.getItem("pizzelleCart");
-
-    return savedCart ? JSON.parse(savedCart) : [];
-  });
+  const navigate = useNavigate();
+  const { user, configured } = useAuth();
+  const { cart, addItem, increaseItem, decreaseItem, removeItem, clearCart, refreshPrices, cartError } = useCart();
 
   const [showCart, setShowCart] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
@@ -29,117 +25,29 @@ function Home() {
   const [lastOrder, setLastOrder] = useState(null);
 
   const [search, setSearch] = useState("");
-
-  const products = [
-    {
-      id: 1,
-      name: "Pizza Margherita",
-      description: "Salsa de tomate, mozzarella y albahaca fresca.",
-      price: 24000,
-      image: image1,
-    },
-    {
-      id: 2,
-      name: "Pizza Pepperoni",
-      description: "Salsa de tomate, mozzarella y pepperoni.",
-      price: 25000,
-      image: image2,
-    },
-    {
-      id: 3,
-      name: "Pizza Hawaiana",
-      description: "Mozzarella, piña y jamón.",
-      price: 15000,
-      image: image3,
-    },
-    {
-      id: 4,
-      name: "Pizza Tres Quesos",
-      description: "Mozzarella, parmesano y gorgonzola.",
-      price: 18000,
-      image: image4,
-    },
-    {
-      id: 5,
-      name: "Pizza Vegetariana",
-      description: "Champiñones, cebolla y pimientos.",
-      price: 20000,
-      image: image5,
-    },
-    {
-      id: 6,
-      name: "Pizza Chicken",
-      description: "Salsa BBQ, pollo y cebolla roja.",
-      price: 17000,
-      image: image6,
-    },
-  ];
-
-  const saveCart = (newCart) => {
-    setCart(newCart);
-    localStorage.setItem("pizzelleCart", JSON.stringify(newCart));
-  };
+  const [checkoutBusy, setCheckoutBusy] = useState(false);
+  const [notice, setNotice] = useState("");
+  const [products, setProducts] = useState([]);
+  const [catalogLoading, setCatalogLoading] = useState(configured);
+  useEffect(() => {
+    if (!configured) return;
+    getCatalog().then((catalog) => {
+      setProducts(catalog);
+      refreshPrices(catalog);
+    }).catch((error) => setNotice(`No pudimos cargar el menú desde la base de datos: ${error.message}`)).finally(() => setCatalogLoading(false));
+  }, [configured, refreshPrices]);
 
   const addToCart = (product) => {
-    const existingProduct = cart.find((item) => item.id === product.id);
-
-    let newCart;
-
-    if (existingProduct) {
-      newCart = cart.map((item) =>
-        item.id === product.id
-          ? {
-              ...item,
-              quantity: item.quantity + 1,
-            }
-          : item,
-      );
-    } else {
-      newCart = [
-        ...cart,
-        {
-          ...product,
-          quantity: 1,
-        },
-      ];
-    }
-
-    saveCart(newCart);
+    setNotice("");
+    if (!addItem(product)) setNotice("Puedes pedir hasta 20 unidades por producto.");
   };
 
   const increaseQuantity = (id) => {
-    const newCart = cart.map((item) =>
-      item.id === id
-        ? {
-            ...item,
-            quantity: item.quantity + 1,
-          }
-        : item,
-    );
-
-    saveCart(newCart);
+    if (!increaseItem(id)) setNotice("Puedes pedir hasta 20 unidades por producto.");
   };
 
-  const decreaseQuantity = (id) => {
-    const newCart = cart
-      .map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              quantity: item.quantity - 1,
-            }
-          : item,
-      )
-      .filter((item) => item.quantity > 0);
-
-    saveCart(newCart);
-  };
-
-  const removeFromCart = (id) => {
-    const newCart = cart.filter((item) => item.id !== id);
-
-    saveCart(newCart);
-  };
+  const decreaseQuantity = (id) => decreaseItem(id);
+  const removeFromCart = (id) => removeItem(id);
 
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
@@ -157,34 +65,23 @@ function Home() {
       alert("Tu carrito está vacío.");
       return;
     }
+    if (!configured) { setNotice("Configura primero Supabase para guardar y recibir pedidos."); setShowCart(false); return; }
+    if (!user) { setShowCart(false); navigate("/login", { state: { from: "/" } }); return; }
 
     setShowCart(false);
     setShowPayment(true);
   };
 
-  const handlePayment = ({ method }) => {
-    const order = {
-      id: `PZ-${Date.now().toString().slice(-6)}`,
-      method:
-        method === "card"
-          ? "Tarjeta"
-          : method === "nequi"
-            ? "Nequi"
-            : "Efectivo",
-      total: totalPrice,
-      date: new Date().toLocaleString("es-CO"),
-      products: cart,
-    };
-
-    localStorage.setItem("pizzelleLastOrder", JSON.stringify(order));
-
-    setLastOrder(order);
-
-    setCart([]);
-    localStorage.removeItem("pizzelleCart");
-
-    setShowPayment(false);
-    setShowSuccess(true);
+  const handlePayment = async (details) => {
+    setCheckoutBusy(true); setNotice("");
+    try {
+      const savedOrder = await createOrder({ ...details, items: cart });
+      const order = { id: savedOrder.order_number, method: details.paymentMethod === "nequi" ? "Nequi" : "Efectivo al recibir", total: Number(savedOrder.total_cop) };
+      setLastOrder(order); clearCart();
+      setShowPayment(false); setShowSuccess(true);
+    } catch (error) {
+      setNotice(error.message || "No se pudo guardar el pedido. Inténtalo de nuevo.");
+    } finally { setCheckoutBusy(false); }
   };
 
   return (
@@ -195,6 +92,10 @@ function Home() {
         search={search}
         setSearch={setSearch}
       />
+
+      {!configured && <div className="setup-banner">La aplicación está en modo de configuración: conecta Supabase siguiendo el README para activar cuentas y pedidos.</div>}
+      {notice && <div className="setup-banner error-banner" role="alert">{notice}</div>}
+      {cartError && <div className="setup-banner error-banner" role="alert">No se pudo sincronizar tu carrito: {cartError}</div>}
 
       <main>
         <section className="hero" id="inicio">
@@ -234,7 +135,9 @@ function Home() {
             <p>Elige tu favorita y agrégala al carrito.</p>
           </div>
 
-          {filteredProducts.length > 0 ? (
+          {catalogLoading ? <p className="catalog-loading">Cargando el menú…</p> : products.length === 0 ? (
+            <div className="no-results"><span>🍕</span><h3>El menú no está disponible</h3><p>Vuelve a intentarlo más tarde.</p></div>
+          ) : filteredProducts.length > 0 ? (
             <div className="product-list">
               {filteredProducts.map((product) => (
                 <ProductCard
@@ -273,6 +176,8 @@ function Home() {
           totalPrice={totalPrice}
           onClose={() => setShowPayment(false)}
           onConfirm={handlePayment}
+          busy={checkoutBusy}
+          serverError={notice}
         />
       )}
 
@@ -285,10 +190,7 @@ function Home() {
           <div className="footer-brand">
             <h2>🍕 Pizzelle</h2>
 
-            <p>
-              Pizzas deliciosas preparadas con ingredientes frescos y mucho
-              sabor.
-            </p>
+            <p>Pizzas deliciosas preparadas con ingredientes frescos y mucho sabor.</p>
           </div>
 
           <div className="footer-column">
@@ -300,10 +202,9 @@ function Home() {
           </div>
 
           <div className="footer-column">
-            <h3>Contacto</h3>
-
-            <p>📞 +57 310 641 6986</p>
-            <p>✉️ carrenoclaudia@gmail.com</p>
+            <h3>Tu pedido</h3>
+            <p>Atención al cliente</p>
+            <p>El negocio confirmará la entrega y el pago al recibir tu pedido.</p>
           </div>
         </div>
 

@@ -276,6 +276,11 @@
   transform: translateY(-1px);
 }
 
+.nav-account-link, .nav-login-link { display: inline-flex; align-items: center; justify-content: center; gap: 6px; color: #3157a6; text-decoration: none; font-size: 12px; font-weight: 800; white-space: nowrap; }
+.nav-account-link { height: 40px; padding: 0 9px; border-radius: 10px; }
+.nav-account-link:hover, .nav-login-link:hover { background: #eef3ff; }
+@media (max-width: 550px) { .nav-account-link span { display: none; } .nav-account-link { width: 38px; padding: 0; } .navbar-actions { gap: 5px; } }
+
 /* =========================
    TABLET
 ========================= */
@@ -361,4 +366,21 @@
   .cart-button span {
     display: none;
   }
+}
+
+@media (max-width: 550px) {
+  .navbar { display: flex; justify-content: space-between; gap: 8px; padding: 8px 12px; }
+  .navbar-brand-link { gap: 6px; }
+  .navbar-logo { width: 38px; height: 38px; }
+  .navbar-brand-text strong { font-size: 16px; }
+  .navbar-brand-text span { display: none; }
+  .navbar-actions { gap: 4px; }
+  .navbar-search, .cart-button, .logout-button { width: 38px; height: 40px; flex: 0 0 38px; }
+  .nav-account-link { width: 34px; height: 40px; flex: 0 0 34px; }
+  .nav-login-link { padding: 0 5px; font-size: 11px; }
+}
+@media (max-width: 360px) {
+  .navbar { padding-inline: 9px; gap: 4px; }
+  .navbar-search { display: none; }
+  .navbar-actions { gap: 3px; }
 }

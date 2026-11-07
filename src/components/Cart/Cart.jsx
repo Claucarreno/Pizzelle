@@ -65,6 +65,8 @@ function Cart({
 
                       <button
                         type="button"
+                        disabled={item.quantity >= 20}
+                        title={item.quantity >= 20 ? "Máximo 20 por producto" : "Aumentar cantidad"}
                         onClick={() => onIncrease(item.id)}
                         aria-label="Aumentar cantidad"
                       >

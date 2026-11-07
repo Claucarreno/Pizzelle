@@ -293,7 +293,8 @@
 
 @media (max-width: 500px) {
   .auth-page {
-    padding: 20px 15px;
+    align-items: flex-start;
+    padding: max(20px, env(safe-area-inset-top)) 15px max(20px, env(safe-area-inset-bottom));
   }
 
   .auth-card {
@@ -305,4 +306,5 @@
   .auth-header h1 {
     font-size: 27px;
   }
+  .auth-form input { font-size: 16px; }
 }

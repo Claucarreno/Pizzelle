@@ -1,4 +1,5 @@
 import { CheckCircle, X } from "lucide-react";
+import { formatPrice } from "../../utils/formatPrice";
 import "./OrderSuccess.css";
 
 function OrderSuccess({ order, onClose }) {
@@ -13,9 +14,9 @@ function OrderSuccess({ order, onClose }) {
           <CheckCircle size={55} />
         </div>
 
-        <span className="success-label">PEDIDO CONFIRMADO</span>
+        <span className="success-label">PEDIDO RECIBIDO</span>
 
-        <h2>¡Gracias por tu compra! 🍕</h2>
+        <h2>¡Gracias por pedir en Pizzelle! 🍕</h2>
 
         <p>Tu pedido ha sido recibido correctamente.</p>
 
@@ -32,13 +33,13 @@ function OrderSuccess({ order, onClose }) {
 
           <div>
             <span>Total</span>
-            <strong>${order.total.toFixed(2)}</strong>
+            <strong>{formatPrice(order.total)}</strong>
           </div>
         </div>
 
         <div className="delivery-info">
-          <strong>🛵 Tiempo estimado</strong>
-          <span>30 - 45 minutos</span>
+          <strong>📞 Siguiente paso</strong>
+          <span>El negocio confirmará tu pedido y los detalles de entrega.</span>
         </div>
 
         <button type="button" className="success-button" onClick={onClose}>

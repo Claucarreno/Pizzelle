@@ -1,314 +1,67 @@
-# 🍕 Pizzelle
+# Pizzelle
 
-> Aplicación web de pedidos de pizza artesanal desarrollada con React, enfocada en ofrecer una experiencia de compra moderna, intuitiva y responsive.
+Tienda web de pizzas hecha con React y Vite. Incluye catálogo, carrito, registro e inicio de sesión, pedidos persistentes, historial del cliente y administración básica de estados. La base de datos y la autenticación usan Supabase.
 
-![Pizzelle](https://img.shields.io/badge/Pizzelle-Pizza%20Artesanal-orange)
-![React](https://img.shields.io/badge/React-Frontend-61DAFB?logo=react)
-![Vite](https://img.shields.io/badge/Vite-Frontend-646CFF?logo=vite)
-![JavaScript](https://img.shields.io/badge/JavaScript-ES6%2B-F7DF1E?logo=javascript)
-![CSS3](https://img.shields.io/badge/CSS3-Styling-1572B6?logo=css3)
-![Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?logo=vercel)
+## Requisitos
 
----
+- Node.js 20.19+ o 22.12+.
+- Un proyecto de Supabase.
+- Vercel (opcional para publicar).
 
-## 🌐 Demo
+## Ejecutar en local
 
-Puedes probar Pizzelle directamente desde el navegador:
+1. Instala dependencias: `npm install`.
+2. Crea un proyecto en [Supabase](https://supabase.com/dashboard).
+3. En Supabase, abre **SQL Editor**, pega y ejecuta `supabase/schema.sql`.
+4. En **Project Settings → API**, copia la Project URL y la publishable/anon key. Nunca uses la `service_role` key en el navegador.
+5. Copia `.env.example` como `.env.local` y completa:
 
-### 🍕 [Visitar Pizzelle](https://pizzelle.vercel.app/)
+   ```env
+   VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
+   VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+   ```
 
-💻 **Repositorio:**
-https://github.com/Claucarreno/Pizzelle
+6. En **Authentication → URL Configuration**, configura el sitio local `http://localhost:5173` como Site URL y agrégalo a Redirect URLs.
+7. Ejecuta `npm run dev`.
 
----
+Los clientes deberán confirmar su correo si la confirmación de email está habilitada en Supabase. Hasta configurar Supabase, el menú se puede revisar, pero el registro, el inicio de sesión y la creación de pedidos permanecerán desactivados.
 
-## 📝 Descripción
+### Si olvidaste la contraseña de PostgreSQL
 
-**Pizzelle** es una aplicación web de pedidos de pizza artesanal desarrollada como proyecto de aprendizaje y portafolio.
+Entra al Dashboard de Supabase y ve a **Database → Settings** para restablecer la contraseña de la base de datos. La web usa la URL del proyecto y la clave publishable; no usa la contraseña de PostgreSQL. Solo tendrás que cambiar la contraseña en herramientas o scripts que se conecten directamente por `psql`/connection string. No pongas esa contraseña ni una clave `secret` en variables `VITE_` del navegador.
 
-El proyecto simula la experiencia de compra de una tienda de pizzas, permitiendo al usuario explorar los productos disponibles, agregarlos al carrito, modificar cantidades y avanzar por el proceso de compra.
+## Hacer una cuenta administradora
 
-La aplicación fue desarrollada utilizando **React y Vite**, implementando componentes reutilizables, navegación entre páginas y almacenamiento local de información.
+Registra primero tu cuenta desde la aplicación y confirma el correo. Después ejecuta este SQL, reemplazando el correo:
 
-Pizzelle también cuenta con un flujo de autenticación y un proceso de checkout/pago simulado, con el objetivo de representar una experiencia de comercio electrónico desde el frontend.
-
----
-
-## ✨ Características
-
-* 🍕 Catálogo de pizzas y productos.
-* 🔎 Exploración de productos.
-* 🛒 Carrito de compras.
-* ➕ Aumentar cantidades.
-* ➖ Disminuir cantidades.
-* 🗑️ Eliminar productos del carrito.
-* 💰 Cálculo del total de compra.
-* 👤 Registro de usuarios.
-* 🔐 Inicio de sesión.
-* 🔑 Validación de formularios.
-* 💳 Proceso de checkout.
-* 💵 Flujo de pago simulado.
-* 📦 Historial de pedidos.
-* 💾 Persistencia mediante LocalStorage.
-* 🧭 Navegación mediante React Router.
-* 📱 Diseño responsive.
-* 🎨 Interfaz moderna orientada a la experiencia del usuario.
-* 🚀 Aplicación desplegada en Vercel.
-
----
-
-## 🛠️ Tecnologías utilizadas
-
-### Frontend
-
-| Tecnología       | Uso                                       |
-| ---------------- | ----------------------------------------- |
-| **React**        | Construcción de la interfaz y componentes |
-| **JavaScript**   | Lógica y funcionalidad                    |
-| **HTML5**        | Estructura de la aplicación               |
-| **CSS3**         | Estilos y diseño responsive               |
-| **React Router** | Navegación entre páginas                  |
-| **Vite**         | Desarrollo y construcción del proyecto    |
-
-### Herramientas
-
-| Herramienta            | Uso                         |
-| ---------------------- | --------------------------- |
-| **Git**                | Control de versiones        |
-| **GitHub**             | Repositorio del proyecto    |
-| **Vercel**             | Despliegue de la aplicación |
-| **Visual Studio Code** | Entorno de desarrollo       |
-
-### Almacenamiento
-
-* **LocalStorage** para conservar información en el navegador.
-
----
-
-## 📂 Estructura del proyecto
-
-```text
-Pizzelle/
-│
-├── public/
-│
-├── src/
-│   │
-│   ├── assets/
-│   │
-│   ├── components/
-│   │   ├── Header/
-│   │   ├── ProductCard/
-│   │   ├── CartModal/
-│   │   └── ...
-│   │
-│   ├── pages/
-│   │   ├── Home/
-│   │   ├── Login/
-│   │   ├── Register/
-│   │   ├── Checkout/
-│   │   └── ...
-│   │
-│   ├── App.jsx
-│   ├── main.jsx
-│   └── ...
-│
-├── package.json
-├── vite.config.js
-└── README.md
+```sql
+update public.profiles
+set role = 'admin'
+where id = (select id from auth.users where email = 'tu-correo@ejemplo.com');
 ```
 
-> La estructura puede evolucionar a medida que se incorporen nuevas funcionalidades al proyecto.
+El rol no se puede cambiar desde la aplicación. La administración inicial permite ver los pedidos y actualizar su estado. No incluye cobro en línea ni gestión de productos desde el panel.
 
----
+## Datos y pagos
 
-## ⚙️ Instalación
+Usuarios, menú, carrito de clientes autenticados, pedidos y sus detalles se guardan y consultan mediante la API de Supabase sobre PostgreSQL. El carrito de visitantes sin iniciar sesión es temporal en memoria; el carrito de una cuenta se sincroniza con la base de datos. La sesión de autenticación dura durante la pestaña. El total se recalcula en la base de datos según los precios vigentes del menú; el navegador no puede fijar el precio final. Las políticas RLS restringen los datos de cada cliente y reservan el panel para administradores.
 
-Si quieres ejecutar Pizzelle localmente, necesitas tener instalado:
+Los métodos disponibles son efectivo contra entrega y Nequi como transferencia por confirmar. La aplicación no procesa transacciones ni solicita datos de tarjeta. Antes de recibir pedidos reales, configura y muestra los datos comerciales y de contacto del negocio.
 
-* [Node.js](https://nodejs.org/)
-* Git
-* Visual Studio Code u otro editor de código
+El menú y los precios se leen desde `public.products` en Supabase. Las imágenes actuales están en la carpeta de assets y se enlazan por el ID de cada pizza; para añadir nuevos productos con imágenes hay que agregar también el recurso correspondiente en el frontend.
 
-### 1. Clonar el repositorio
+## Publicar en Vercel
 
-```bash
-git clone https://github.com/Claucarreno/Pizzelle.git
-```
+1. Importa el repositorio en Vercel. El framework Vite y los comandos `npm run build` / `dist` se detectan automáticamente.
+2. En **Project Settings → Environment Variables**, agrega `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` para Production y Preview según corresponda.
+3. Despliega el proyecto. `vercel.json` configura las rutas de React Router para que `/orders` y `/admin` funcionen al recargar.
+4. En Supabase, añade el dominio final de Vercel a **Authentication → URL Configuration** (Site URL y Redirect URLs).
 
-### 2. Entrar al proyecto
+Al hacer push a la rama conectada, Vercel despliega automáticamente. Los cambios a variables de entorno requieren un nuevo despliegue. Los cambios a datos de Supabase se reflejan directamente; cambios de código o esquema que dependan de nuevas funciones necesitan despliegue o migración según corresponda.
 
-```bash
-cd Pizzelle
-```
+## Comandos
 
-### 3. Instalar las dependencias
-
-```bash
-npm install
-```
-
-### 4. Ejecutar el servidor de desarrollo
-
-```bash
-npm run dev
-```
-
-### 5. Abrir la aplicación
-
-Después de ejecutar el comando anterior, Vite mostrará en la terminal la dirección local.
-
-Normalmente será:
-
-```text
-http://localhost:5173
-```
-
----
-
-## 📜 Scripts disponibles
-
-| Comando           | Descripción                         |
-| ----------------- | ----------------------------------- |
-| `npm install`     | Instala las dependencias            |
-| `npm run dev`     | Inicia el servidor de desarrollo    |
-| `npm run build`   | Genera la versión de producción     |
-| `npm run preview` | Previsualiza el build de producción |
-
----
-
-## 🎯 Objetivos del proyecto
-
-El desarrollo de Pizzelle permitió practicar diferentes conceptos fundamentales del desarrollo frontend:
-
-* Crear interfaces utilizando React.
-* Construir componentes reutilizables.
-* Manejar estados y eventos.
-* Trabajar con formularios.
-* Implementar validaciones.
-* Gestionar rutas con React Router.
-* Utilizar LocalStorage.
-* Crear un carrito de compras.
-* Simular un flujo de comercio electrónico.
-* Aplicar diseño responsive.
-* Organizar un proyecto frontend.
-* Utilizar Git y GitHub.
-* Realizar un despliegue utilizando Vercel.
-
----
-
-## 📚 Aprendizajes
-
-Durante el desarrollo de Pizzelle se fortalecieron conocimientos en:
-
-**React**
-
-* Componentes.
-* Props.
-* Estado.
-* Hooks.
-* Manejo de eventos.
-* Renderizado dinámico.
-
-**JavaScript**
-
-* Funciones.
-* Arrays.
-* Objetos.
-* Métodos como `map`, `filter` y `find`.
-* Manejo de datos.
-* Manipulación del estado.
-
-**Frontend**
-
-* HTML semántico.
-* CSS.
-* Diseño responsive.
-* Organización de componentes.
-* Experiencia de usuario.
-
-**Herramientas**
-
-* Git.
-* GitHub.
-* Vite.
-* Vercel.
-* Visual Studio Code.
-
----
-
-## 🚀 Despliegue
-
-Pizzelle está desplegado utilizando **Vercel**, permitiendo acceder a la aplicación directamente desde internet.
-
-### 🌐 Aplicación
-
-**Pizzelle | Pizza artesanal**
-
-https://pizzelle-cqfiumzvo-carrenoclaudia981-2332.vercel.app/
-
-### 💻 Código fuente
-
-https://github.com/Claucarreno/Pizzelle
-
----
-
-## 🔮 Próximas mejoras
-
-Algunas funcionalidades que podrían incorporarse en futuras versiones:
-
-* 🔐 Sistema de autenticación conectado a un backend.
-* 🗄️ Base de datos para usuarios y pedidos.
-* 💳 Integración con una plataforma de pagos real.
-* 📦 Gestión de pedidos.
-* 🧑‍💼 Panel administrativo.
-* 🔍 Búsqueda y filtrado avanzado.
-* ⭐ Sistema de reseñas y calificaciones.
-* ❤️ Sistema de favoritos.
-* 🔔 Notificaciones.
-* ☁️ Integración con una API/backend.
-* 📱 Mejoras adicionales de responsive design.
-
----
-
-## 👩‍💻 Autora
-
-### Claudia Marcela Puentes Carreño
-
-**Desarrolladora de Software Junior en formación**
-
-Estudiante de Desarrollo de Software, enfocada en fortalecer mis conocimientos en desarrollo frontend y en la construcción de aplicaciones web modernas.
-
-Actualmente trabajando principalmente con:
-
-* HTML
-* CSS
-* JavaScript
-* React
-* Git
-* GitHub
-
-### 🔗 Perfiles
-
-💻 **GitHub:**
-https://github.com/Claucarreno
-
-🌐 **Portafolio:**
-Próximamente
-
-💼 **LinkedIn:**
-Próximamente
-
----
-
-## ⭐ ¿Te gustó el proyecto?
-
-Si encuentras interesante este proyecto, puedes visitar el repositorio y dejar una ⭐ en GitHub.
-
----
-
-<p align="center">
-  🍕 Pizzelle — Pizza artesanal
-  <br>
-  Desarrollado con ❤️ por Claudia Marcela Puentes Carreño
-</p>
+- `npm run dev`: servidor local.
+- `npm run build`: compilación de producción.
+- `npm run preview`: vista previa local de `dist`.
+- `npm run lint`: revisión estática de ESLint.
