@@ -28,7 +28,7 @@ function Home() {
   const [checkoutBusy, setCheckoutBusy] = useState(false);
   const [notice, setNotice] = useState("");
   const [products, setProducts] = useState([]);
-  const [catalogLoading, setCatalogLoading] = useState(configured);
+  const [catalogLoading, setCatalogLoading] = useState(true);
   useEffect(() => {
     if (!configured) return;
     getCatalog().then((catalog) => {
@@ -65,7 +65,7 @@ function Home() {
       alert("Tu carrito está vacío.");
       return;
     }
-    if (!configured) { setNotice("Configura primero Supabase para guardar y recibir pedidos."); setShowCart(false); return; }
+    if (!configured) { setNotice("La tienda todavía no está conectada con PostgreSQL."); setShowCart(false); return; }
     if (!user) { setShowCart(false); navigate("/login", { state: { from: "/" } }); return; }
 
     setShowCart(false);
@@ -93,7 +93,7 @@ function Home() {
         setSearch={setSearch}
       />
 
-      {!configured && <div className="setup-banner">La aplicación está en modo de configuración: conecta Supabase siguiendo el README para activar cuentas y pedidos.</div>}
+      {!configured && <div className="setup-banner">La tienda se activará cuando la API de Vercel y PostgreSQL estén configuradas.</div>}
       {notice && <div className="setup-banner error-banner" role="alert">{notice}</div>}
       {cartError && <div className="setup-banner error-banner" role="alert">No se pudo sincronizar tu carrito: {cartError}</div>}
 
@@ -135,7 +135,7 @@ function Home() {
             <p>Elige tu favorita y agrégala al carrito.</p>
           </div>
 
-          {catalogLoading ? <p className="catalog-loading">Cargando el menú…</p> : products.length === 0 ? (
+          {configured && catalogLoading ? <p className="catalog-loading">Cargando el menú…</p> : products.length === 0 ? (
             <div className="no-results"><span>🍕</span><h3>El menú no está disponible</h3><p>Vuelve a intentarlo más tarde.</p></div>
           ) : filteredProducts.length > 0 ? (
             <div className="product-list">

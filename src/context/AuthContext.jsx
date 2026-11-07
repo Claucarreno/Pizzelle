@@ -1,39 +1,39 @@
-import { useEffect, useState } from "react";
-import { isSupabaseConfigured, supabase } from "../lib/supabase";
+import { useCallback, useEffect, useState } from "react";
 import { AuthContext } from "./auth-context";
 
 export function AuthProvider({ children }) {
-  const [session, setSession] = useState(null);
+  const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(isSupabaseConfigured);
+  const [configured, setConfigured] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!supabase) return;
-    let alive = true;
-    const loadProfile = async (user) => {
-      if (!user) { if (alive) setProfile(null); return; }
-      const { data } = await supabase.from("profiles").select("full_name, role").eq("id", user.id).maybeSingle();
-      if (alive) setProfile({ id: user.id, email: user.email, fullName: data?.full_name || user.user_metadata?.full_name || "", role: data?.role || "customer" });
-    };
-    supabase.auth.getSession().then(async ({ data }) => {
-      if (!alive) return;
-      setSession(data.session);
-      await loadProfile(data.session?.user);
-      if (alive) setLoading(false);
-    });
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      setSession(nextSession);
-      setLoading(true);
-      Promise.resolve().then(() => loadProfile(nextSession?.user)).finally(() => { if (alive) setLoading(false); });
-    });
-    return () => { alive = false; listener.subscription.unsubscribe(); };
+  const refreshUser = useCallback(async () => {
+    try {
+      const healthResponse = await fetch("/api/health", { credentials: "same-origin" });
+      const health = await healthResponse.json().catch(() => ({}));
+      setConfigured(health.configured === true);
+      if (health.configured !== true) { setUser(null); setProfile(null); return; }
+
+      const response = await fetch("/api/auth/me", { credentials: "same-origin" });
+      if (response.status === 401) { setUser(null); setProfile(null); return; }
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "No se pudo cargar la cuenta.");
+      setUser(data.user || null);
+      setProfile(data.profile || null);
+    } catch {
+      setConfigured(false); setUser(null); setProfile(null);
+    } finally { setLoading(false); }
   }, []);
 
-  const value = {
-    session, user: session?.user ?? null, profile, loading,
-    configured: isSupabaseConfigured,
-    signOut: async () => supabase?.auth.signOut(),
-  };
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
+  useEffect(() => {
+    const timer = window.setTimeout(() => { void refreshUser(); }, 0);
+    return () => window.clearTimeout(timer);
+  }, [refreshUser]);
 
+  const signOut = useCallback(async () => {
+    try { await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" }); }
+    finally { setUser(null); setProfile(null); }
+  }, []);
+
+  return <AuthContext.Provider value={{ user, profile, configured, loading, refreshUser, signOut }}>{children}</AuthContext.Provider>;
+}

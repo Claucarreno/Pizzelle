@@ -2,13 +2,13 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../../context/useAuth";
-import { supabase } from "../../lib/supabase";
+import { api } from "../../lib/api";
 import logo from "../../assets/logo.png";
 import "./Login.css";
 
 function Login() {
   const navigate = useNavigate();
-  const { configured } = useAuth();
+  const { configured, refreshUser } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
@@ -17,12 +17,14 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!configured) { setMessage("La conexión con Supabase aún no está configurada. Revisa el archivo .env.local y el README."); return; }
+    if (!configured) { setMessage("El servicio de PostgreSQL aún no está disponible. Inténtalo más tarde."); return; }
     setBusy(true); setMessage("");
-    const { error } = await supabase.auth.signInWithPassword({ email: formData.email, password: formData.password });
-    setBusy(false);
-    if (error) { setMessage(error.message === "Invalid login credentials" ? "Correo o contraseña incorrectos." : error.message); return; }
-    navigate("/");
+    try {
+      await api("/api/auth/login", { method: "POST", body: JSON.stringify(formData) });
+      await refreshUser();
+      navigate("/");
+    } catch (error) { setMessage(error.message); }
+    finally { setBusy(false); }
   };
 
   return (

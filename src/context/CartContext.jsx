@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CartContext } from "./cart-context";
 import { useAuth } from "./useAuth";
-import { isSupabaseConfigured } from "../lib/supabase";
 import { loadSavedCart, replaceSavedCart } from "../lib/cart";
 
 export function CartProvider({ children }) {
@@ -11,7 +10,7 @@ export function CartProvider({ children }) {
   const guestItems = useRef([]);
   const readyUserId = useRef(null);
   const saveQueue = useRef(Promise.resolve());
-  const { user } = useAuth();
+  const { user, configured } = useAuth();
   const userId = user?.id;
 
   const persistInOrder = useCallback((snapshot) => {
@@ -22,7 +21,7 @@ export function CartProvider({ children }) {
   useEffect(() => {
     let active = true;
     readyUserId.current = null;
-    if (!userId || !isSupabaseConfigured) {
+    if (!userId || !configured) {
       guestItems.current = [];
       const resetTimer = setTimeout(() => { setItems([]); setCartLoading(false); }, 0);
       return () => { active = false; clearTimeout(resetTimer); };
@@ -46,7 +45,7 @@ export function CartProvider({ children }) {
       }).finally(() => { if (active) setCartLoading(false); });
     }, 0);
     return () => { active = false; clearTimeout(loadTimer); };
-  }, [userId]);
+  }, [userId, configured]);
 
   useEffect(() => {
     if (!userId || readyUserId.current !== userId) return undefined;

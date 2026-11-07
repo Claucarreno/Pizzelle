@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import { supabase } from "../../lib/supabase";
+import { api } from "../../lib/api";
 import { useAuth } from "../../context/useAuth";
 import logo from "../../assets/logo.png";
 import "./Register.css";
 
 function Register() {
   const navigate = useNavigate();
-  const { configured } = useAuth();
+  const { configured, refreshUser } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -18,15 +18,16 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setMessage("");
-    if (!configured) { setMessage("La conexión con Supabase aún no está configurada. Revisa el archivo .env.local y el README."); return; }
+    if (!configured) { setMessage("El servicio de PostgreSQL aún no está disponible. Inténtalo más tarde."); return; }
     if (formData.password !== formData.confirmPassword) { setMessage("Las contraseñas no coinciden."); return; }
     if (formData.password.length < 8) { setMessage("Usa una contraseña de al menos 8 caracteres."); return; }
     setBusy(true);
-    const { data, error } = await supabase.auth.signUp({ email: formData.email, password: formData.password, options: { data: { full_name: formData.name.trim() } } });
-    setBusy(false);
-    if (error) { setMessage(error.message); return; }
-    if (data.session) navigate("/");
-    else setMessage("Cuenta creada. Revisa tu correo para confirmar el registro y luego inicia sesión.");
+    try {
+      await api("/api/auth/register", { method: "POST", body: JSON.stringify(formData) });
+      await refreshUser();
+      navigate("/");
+    } catch (error) { setMessage(error.message); }
+    finally { setBusy(false); }
   };
 
   return (

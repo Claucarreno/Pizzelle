@@ -1,67 +1,47 @@
 # Pizzelle
 
-Tienda web de pizzas hecha con React y Vite. Incluye catálogo, carrito, registro e inicio de sesión, pedidos persistentes, historial del cliente y administración básica de estados. La base de datos y la autenticación usan Supabase.
+Tienda de pizzas con React, API privada de Vercel y PostgreSQL administrado por Neon. Incluye catálogo, registro e inicio de sesión, carrito guardado para cuentas, pedidos, historial y panel básico de estados.
 
-## Requisitos
+## Base de datos
 
-- Node.js 20.19+ o 22.12+.
-- Un proyecto de Supabase.
-- Vercel (opcional para publicar).
+1. Crea una base PostgreSQL en [Neon](https://neon.tech/). Esta será la base en línea compartida por todos los visitantes, no una base instalada en tu computador.
+2. Abre el SQL Editor de Neon y ejecuta todo el archivo `database/schema.sql`. Esto crea las tablas, funciones y pizzas iniciales.
+3. En Neon, copia la cadena de conexión **pooled**. En Vercel, abre el proyecto y ve a **Settings → Environment Variables**. Agrégala con el nombre `DATABASE_URL`.
+4. Genera un secreto para las sesiones ejecutando `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` en tu computador. Agrégalo en Vercel como `JWT_SECRET`.
+5. Selecciona Production y Preview para ambas variables y guarda. No pongas estos valores en el código, en GitHub ni en variables `VITE_`.
+6. Después de subir los cambios a GitHub, espera el nuevo despliegue de Vercel. Si agregas o cambias las variables después, inicia otro despliegue para que surtan efecto.
 
-## Ejecutar en local
+Las funciones de `/api` usan estas variables para acceder a PostgreSQL. Las contraseñas de usuarios se guardan con hash; las sesiones se envían en una cookie `HttpOnly`. El navegador nunca recibe la contraseña de la base.
 
-1. Instala dependencias: `npm install`.
-2. Crea un proyecto en [Supabase](https://supabase.com/dashboard).
-3. En Supabase, abre **SQL Editor**, pega y ejecuta `supabase/schema.sql`.
-4. En **Project Settings → API**, copia la Project URL y la publishable/anon key. Nunca uses la `service_role` key en el navegador.
-5. Copia `.env.example` como `.env.local` y completa:
+## Ejecutar la API localmente
 
-   ```env
-   VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
-   VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
-   ```
+Vercel sirve las rutas de `/api`, por eso para probar el proyecto completo localmente usa `vercel dev` (con el CLI de Vercel instalado) y define `DATABASE_URL` y `JWT_SECRET` en `.env.local`. `npm run dev` por sí solo inicia Vite y no ejecuta la API.
 
-6. En **Authentication → URL Configuration**, configura el sitio local `http://localhost:5173` como Site URL y agrégalo a Redirect URLs.
-7. Ejecuta `npm run dev`.
+## Administrador
 
-Los clientes deberán confirmar su correo si la confirmación de email está habilitada en Supabase. Hasta configurar Supabase, el menú se puede revisar, pero el registro, el inicio de sesión y la creación de pedidos permanecerán desactivados.
-
-### Si olvidaste la contraseña de PostgreSQL
-
-Entra al Dashboard de Supabase y ve a **Database → Settings** para restablecer la contraseña de la base de datos. La web usa la URL del proyecto y la clave publishable; no usa la contraseña de PostgreSQL. Solo tendrás que cambiar la contraseña en herramientas o scripts que se conecten directamente por `psql`/connection string. No pongas esa contraseña ni una clave `secret` en variables `VITE_` del navegador.
-
-## Hacer una cuenta administradora
-
-Registra primero tu cuenta desde la aplicación y confirma el correo. Después ejecuta este SQL, reemplazando el correo:
+Registra primero una cuenta desde la aplicación. Después ejecuta en Neon, con tu correo:
 
 ```sql
-update public.profiles
-set role = 'admin'
-where id = (select id from auth.users where email = 'tu-correo@ejemplo.com');
+UPDATE app_users SET role = 'admin' WHERE email = 'tu-correo@ejemplo.com';
 ```
 
-El rol no se puede cambiar desde la aplicación. La administración inicial permite ver los pedidos y actualizar su estado. No incluye cobro en línea ni gestión de productos desde el panel.
+La administración permite consultar pedidos y cambiar su estado. Los pagos de tarjeta no están conectados; el pedido permite efectivo al recibir o Nequi por confirmar.
 
-## Datos y pagos
+## Comprobar que quedó en línea
 
-Usuarios, menú, carrito de clientes autenticados, pedidos y sus detalles se guardan y consultan mediante la API de Supabase sobre PostgreSQL. El carrito de visitantes sin iniciar sesión es temporal en memoria; el carrito de una cuenta se sincroniza con la base de datos. La sesión de autenticación dura durante la pestaña. El total se recalcula en la base de datos según los precios vigentes del menú; el navegador no puede fijar el precio final. Las políticas RLS restringen los datos de cada cliente y reservan el panel para administradores.
-
-Los métodos disponibles son efectivo contra entrega y Nequi como transferencia por confirmar. La aplicación no procesa transacciones ni solicita datos de tarjeta. Antes de recibir pedidos reales, configura y muestra los datos comerciales y de contacto del negocio.
-
-El menú y los precios se leen desde `public.products` en Supabase. Las imágenes actuales están en la carpeta de assets y se enlazan por el ID de cada pizza; para añadir nuevos productos con imágenes hay que agregar también el recurso correspondiente en el frontend.
+Abre `https://TU-DOMINIO/api/health`. Debe responder `{"configured":true}`. Luego crea una cuenta desde la página y, si será la cuenta administradora, ejecuta en Neon el `UPDATE` de la sección anterior. Los visitantes podrán registrarse, pedir, guardar su carrito y consultar el historial; la cuenta administradora podrá revisar pedidos y actualizar sus estados.
 
 ## Publicar en Vercel
 
-1. Importa el repositorio en Vercel. El framework Vite y los comandos `npm run build` / `dist` se detectan automáticamente.
-2. En **Project Settings → Environment Variables**, agrega `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` para Production y Preview según corresponda.
-3. Despliega el proyecto. `vercel.json` configura las rutas de React Router para que `/orders` y `/admin` funcionen al recargar.
-4. En Supabase, añade el dominio final de Vercel a **Authentication → URL Configuration** (Site URL y Redirect URLs).
-
-Al hacer push a la rama conectada, Vercel despliega automáticamente. Los cambios a variables de entorno requieren un nuevo despliegue. Los cambios a datos de Supabase se reflejan directamente; cambios de código o esquema que dependan de nuevas funciones necesitan despliegue o migración según corresponda.
+1. Sube el proyecto a GitHub e impórtalo en Vercel.
+2. Configura `DATABASE_URL` y `JWT_SECRET` en las variables de entorno privadas del proyecto.
+3. Deja el comando de build `npm run build` y el directorio de salida `dist`.
+4. Despliega. `vercel.json` conserva las rutas de React Router; las funciones bajo `/api` procesan el acceso a PostgreSQL.
 
 ## Comandos
 
-- `npm run dev`: servidor local.
-- `npm run build`: compilación de producción.
-- `npm run preview`: vista previa local de `dist`.
-- `npm run lint`: revisión estática de ESLint.
+- `npm install`: instalar dependencias.
+- `npm run dev`: desarrollo solo del frontend con Vite.
+- `npm run build`: compilar el frontend.
+- `npm run preview`: previsualizar `dist`.
+- `npm run lint`: revisar el código con ESLint.
