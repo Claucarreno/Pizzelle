@@ -1,6 +1,10 @@
 # Pizzelle
 
-Tienda de pizzas con React, API privada de Vercel y PostgreSQL administrado por Neon. Incluye catálogo, registro e inicio de sesión, carrito guardado para cuentas, pedidos, historial y panel básico de estados.
+**Visita la tienda:** [https://pizzelle.vercel.app/](https://pizzelle.vercel.app/)
+
+Pizzelle es una tienda web de pizzas artesanales. Los clientes pueden explorar el menú, crear una cuenta, guardar productos en el carrito, hacer pedidos y consultar su historial. La administración permite revisar pedidos y actualizar su estado.
+
+La página está construida con React y Vite, y usa una API de Vercel conectada a PostgreSQL en Neon para guardar cuentas, carritos y pedidos. Los pagos disponibles son efectivo al recibir o Nequi para confirmar con el negocio; no se procesan pagos con tarjeta.
 
 ## Base de datos
 
